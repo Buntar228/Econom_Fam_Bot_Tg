@@ -46,6 +46,8 @@ async def get_schedule(name):
         input_element = driver.find_element(By.CSS_SELECTOR, 'input[placeholder="Поиск на Каксе"]')
         input_element.send_keys(name)
 
+        # Поиск ссылки с именем
+        elements = None
         for _ in range(10):
             try:
                 elements = driver.find_element(
@@ -57,12 +59,21 @@ async def get_schedule(name):
                 print('NoSuchElementException')
                 await asyncio.sleep(TIMEOUT)
 
-        elements.click()
+        if elements:
+            elements.click()
+        else:
+            print(f'Элемент с именем "{name}" не найден после 10 попыток')
+            return
 
         await make_screenshot(driver, loop, '1.png')
 
+        # Поиск кнопок
         elements = driver.find_elements(By.CLASS_NAME, 'Button_button__PjVhE')
-        elements[-1].click()
+        if elements:
+            elements[-1].click()
+        else:
+            print('Кнопки не найдены')
+            return
 
         await asyncio.sleep(TIMEOUT)
         await make_screenshot(driver, loop, '2.png')
@@ -72,6 +83,7 @@ async def get_schedule(name):
 
 
 async def make_screenshot(driver, loop, path):
+    element = None
     for _ in range(10):
         try:
             element = driver.find_element(By.CSS_SELECTOR, "main div.wrapper.Timetable_timetable___l88y")
@@ -79,6 +91,10 @@ async def make_screenshot(driver, loop, path):
         except NoSuchElementException:
             print('NoSuchElementException')
             await asyncio.sleep(TIMEOUT)
+
+    if not element:
+        print('Элемент для скриншота не найден')
+        return
 
     page_width = await loop.run_in_executor(None, driver.execute_script, "return document.body.scrollWidth")
     page_height = await loop.run_in_executor(None, driver.execute_script, "return document.body.scrollHeight")
