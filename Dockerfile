@@ -4,14 +4,14 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    gcc \
-    libpq-dev \
-    python3-dev \
+RUN apt-get update -o Acquire::CompressionTypes::Order::=gz \
+    && apt-get install -y --no-install-recommends \
+       gcc \
+       libpq-dev \
+       python3-dev \
     && pip install --no-cache-dir -r requirements.txt \
-    && apt-get purge -y --auto-remove build-essential gcc \
     && rm -rf /var/lib/apt/lists/*
 
 COPY . .
+
 CMD ["python", "main.py"]
