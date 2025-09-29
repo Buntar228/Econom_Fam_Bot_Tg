@@ -36,7 +36,7 @@ def get_chrome_driver():
     )
 
 
-def get_schedule_sync(name: str):
+def get_schedule(name: str):
     driver = get_chrome_driver()
     driver.set_window_size(2048, 1080)
 
