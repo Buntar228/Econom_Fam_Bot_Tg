@@ -1,14 +1,17 @@
-FROM python:3.11
+FROM python:3.11-slim-bullseye
 
 WORKDIR /app
 
 COPY requirements.txt .
 
-RUN apt-get update -o Acquire::CompressionTypes::Order::=gz \
+RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-       gcc \
-       libpq-dev \
-       python3-dev \
+       wget \
+       gnupg \
+       unzip \
+       curl \
+       chromium \
+       chromium-driver \
     && pip install --no-cache-dir -r requirements.txt \
     && rm -rf /var/lib/apt/lists/*
 
