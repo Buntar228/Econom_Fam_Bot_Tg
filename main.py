@@ -517,22 +517,30 @@ async def take_user_name(m: types.Message) -> user_name:
             i += 1
 
     elif user_name[0] == "Эта":
-        photo = open("/tmp/2.png", "rb")
-
-        await get_schedule(full_name)
-        await bot.send_message(chat_id=m.from_user.id,
-                               text=f'Вот ваше расписание на эту неделю, {full_name}')
-        await bot.send_photo(chat_id=m.from_user.id,
-                             photo=photo)
-
+        # сначала создаём скрин
+        screenshot_path_1, screenshot_path_2 = await get_schedule(full_name)
+    
+        await bot.send_message(
+            chat_id=m.from_user.id,
+            text=f'Вот ваше расписание на эту неделю, {full_name}'
+        )
+    
+        # открываем файл уже после того, как он создан
+        with open(screenshot_path_2, "rb") as photo:
+            await bot.send_photo(chat_id=m.from_user.id, photo=photo)
+    
+    
     elif user_name[0] == "Следующая":
-        photo = open("/tmp/2.png", "rb")
+        screenshot_path_1, screenshot_path_2 = await get_schedule(full_name)
+    
+        await bot.send_message(
+            chat_id=m.from_user.id,
+            text=f'Вот ваше расписание на следующую неделю, {full_name}'
+        )
+    
+        with open(screenshot_path_2, "rb") as photo:
+            await bot.send_photo(chat_id=m.from_user.id, photo=photo)
 
-        await get_schedule(full_name)
-        await bot.send_message(chat_id=m.from_user.id,
-                               text=f'Вот ваше расписание на следующую неделю, {full_name}')
-        await bot.send_photo(chat_id=m.from_user.id,
-                             photo=photo)
 
     elif len(user_name) == 4 and m.text.istitle() and len(user_name[3]) == 4:
         user_tg_id = str(m.from_user.id)
