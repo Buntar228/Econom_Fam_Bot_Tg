@@ -50,15 +50,15 @@ async def get_schedule(name: str):
             input_element.send_keys(name)
         except Exception:
             print("Поле поиска не найдено")
-            input_element = None
 
-        wait = WebDriverWait(driver, WAIT_ELEMENT)
+        # Клик по элементу поиска (по тексту, без динамического класса)
         try:
+            wait = WebDriverWait(driver, WAIT_ELEMENT)
             element = await loop.run_in_executor(
                 None,
                 lambda: wait.until(
                     EC.element_to_be_clickable(
-                        (By.XPATH, f'//a[contains(@class, "Searchbar_searchbaroptionVOoIz") and contains(., "{name}")]')
+                        (By.XPATH, f'//a[contains(text(), "{name}")]')
                     )
                 )
             )
