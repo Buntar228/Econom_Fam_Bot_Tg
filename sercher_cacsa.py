@@ -64,7 +64,9 @@ async def get_schedule(name: str):
 
         element.click()
 
-        screenshot_path_1 = os.path.join(os.getcwd(), '1.png')
+        screenshot_path_1 = "/tmp/1.png"
+        screenshot_path_2 = "/tmp/2.png"
+
         await make_screenshot(driver, loop, screenshot_path_1)
 
         buttons = await loop.run_in_executor(None, lambda: driver.find_elements(By.CLASS_NAME, 'Button_button__PjVhE'))
@@ -72,7 +74,6 @@ async def get_schedule(name: str):
             buttons[-1].click()
             await asyncio.sleep(TIMEOUT)
 
-        screenshot_path_2 = os.path.join(os.getcwd(), '2.png')
         await make_screenshot(driver, loop, screenshot_path_2)
 
         return screenshot_path_1, screenshot_path_2
@@ -96,5 +97,6 @@ async def make_screenshot(driver, loop, path):
     page_height = await loop.run_in_executor(None, driver.execute_script, "return document.body.scrollHeight")
     driver.set_window_size(width=page_width, height=page_height)
 
-    success = driver.save_screenshot(path)
-    print("screenshot saved:", success, "at", path)
+    success = await loop.run_in_executor(None, driver.save_screenshot, path)
+    print("screenshot saved:", success, "at", path, "exists:", os.path.exists(path))
+ 
