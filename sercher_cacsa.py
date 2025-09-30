@@ -10,7 +10,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
 TIMEOUT = 3
-WAIT_ELEMENT = 10
 
 def get_chrome_driver():
     chrome_options = Options()
@@ -53,7 +52,7 @@ async def get_schedule(name: str):
 
         # Клик по элементу поиска (по тексту, без динамического класса)
         try:
-            wait = WebDriverWait(driver, WAIT_ELEMENT)
+            wait = WebDriverWait(driver)
             element = await loop.run_in_executor(
                 None,
                 lambda: wait.until(
@@ -92,7 +91,7 @@ async def get_schedule(name: str):
 
 async def make_screenshot(driver, loop, path):
     try:
-        wait = WebDriverWait(driver, WAIT_ELEMENT)
+        wait = WebDriverWait(driver)
         await loop.run_in_executor(
             None,
             lambda: wait.until(
