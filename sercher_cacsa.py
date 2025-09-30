@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
 # Константы
-TIMEOUT = 1
+TIMEOUT = 3
 WAIT_ELEMENT = 10  # время ожидания элемента
 
 def get_chrome_driver():
@@ -39,9 +39,10 @@ async def get_schedule(name: str):
     loop = asyncio.get_event_loop()
 
     try:
+        # Открываем сайт
         await loop.run_in_executor(None, driver.get, 'https://cacs.ws')
 
-        # Находим поле поиска и вводим имя
+        # Поиск по имени
         input_element = await loop.run_in_executor(
             None,
             lambda: driver.find_element(By.CSS_SELECTOR, 'input[placeholder="Поиск на Каксе"]')
@@ -58,22 +59,25 @@ async def get_schedule(name: str):
                     )
                 )
             )
+            element.click()
         except TimeoutException:
             print(f"Элемент с именем {name} не найден")
             return None
 
-        element.click()
-
+        # Пути для скриншотов
         screenshot_path_1 = "/tmp/1.png"
         screenshot_path_2 = "/tmp/2.png"
 
+        # Скриншот 1
         await make_screenshot(driver, loop, screenshot_path_1)
 
+        # Клик по кнопке, если есть
         buttons = await loop.run_in_executor(None, lambda: driver.find_elements(By.CLASS_NAME, 'Button_button__PjVhE'))
         if buttons:
             buttons[-1].click()
             await asyncio.sleep(TIMEOUT)
 
+        # Скриншот 2
         await make_screenshot(driver, loop, screenshot_path_2)
 
         return screenshot_path_1, screenshot_path_2
@@ -82,8 +86,8 @@ async def get_schedule(name: str):
         driver.quit()
 
 async def make_screenshot(driver, loop, path):
-    wait = WebDriverWait(driver, WAIT_ELEMENT)
     try:
+        wait = WebDriverWait(driver, WAIT_ELEMENT)
         await loop.run_in_executor(
             None,
             lambda: wait.until(
@@ -93,10 +97,11 @@ async def make_screenshot(driver, loop, path):
     except TimeoutException:
         print("Элемент для скриншота не найден, делаем полный скриншот страницы")
 
+    # Получаем размеры страницы
     page_width = await loop.run_in_executor(None, driver.execute_script, "return document.body.scrollWidth")
     page_height = await loop.run_in_executor(None, driver.execute_script, "return document.body.scrollHeight")
     driver.set_window_size(width=page_width, height=page_height)
 
+    # Сохраняем скрин
     success = await loop.run_in_executor(None, driver.save_screenshot, path)
-    print("screenshot saved:", success, "at", path, "exists:", os.path.exists(path))
- 
+    print(f"screenshot saved: {success} at {path}, exists: {os.path.exists(path)}")
