@@ -47,10 +47,10 @@ async def test_step_by_step(name: str):
         try:
             wait = WebDriverWait(driver, 10)
             element = wait.until(
-                EC.element_to_be_clickable(
-                    (By.XPATH, f'//a[contains(@class, "Searchbar_searchbaroptionVOoIz") and contains(., "{name}")]')
-                )
-            )
+                  EC.element_to_be_clickable(
+                  (By.XPATH, f'//a[contains(text(), "{name}")]')
+    )
+)
             element.click()
             driver.save_screenshot("/tmp/step_3_click.png")
             print("Step 3: element clicked ->", os.path.exists("/tmp/step_3_click.png"))
