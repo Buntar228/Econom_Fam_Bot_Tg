@@ -39,7 +39,6 @@ async def get_schedule(name: str):
     loop = asyncio.get_event_loop()
 
     try:
-        # Открываем сайт
         await loop.run_in_executor(None, driver.get, 'https://cacs.ws')
 
         # Находим поле поиска и вводим имя
@@ -49,7 +48,6 @@ async def get_schedule(name: str):
         )
         input_element.send_keys(name)
 
-        # Ждём появления нужного результата поиска
         wait = WebDriverWait(driver, WAIT_ELEMENT)
         try:
             element = await loop.run_in_executor(
@@ -66,17 +64,14 @@ async def get_schedule(name: str):
 
         element.click()
 
-        # Скриншот первой страницы
         screenshot_path_1 = os.path.join(os.getcwd(), '1.png')
         await make_screenshot(driver, loop, screenshot_path_1)
 
-        # Нажимаем последнюю кнопку на странице
         buttons = await loop.run_in_executor(None, lambda: driver.find_elements(By.CLASS_NAME, 'Button_button__PjVhE'))
         if buttons:
             buttons[-1].click()
             await asyncio.sleep(TIMEOUT)
 
-        # Скриншот второй страницы
         screenshot_path_2 = os.path.join(os.getcwd(), '2.png')
         await make_screenshot(driver, loop, screenshot_path_2)
 
@@ -88,7 +83,6 @@ async def get_schedule(name: str):
 async def make_screenshot(driver, loop, path):
     wait = WebDriverWait(driver, WAIT_ELEMENT)
     try:
-        # Ждём, пока нужный элемент прогрузится
         await loop.run_in_executor(
             None,
             lambda: wait.until(
@@ -98,10 +92,9 @@ async def make_screenshot(driver, loop, path):
     except TimeoutException:
         print("Элемент для скриншота не найден, делаем полный скриншот страницы")
 
-    # Получаем размеры страницы
     page_width = await loop.run_in_executor(None, driver.execute_script, "return document.body.scrollWidth")
     page_height = await loop.run_in_executor(None, driver.execute_script, "return document.body.scrollHeight")
     driver.set_window_size(width=page_width, height=page_height)
 
-    # Сохраняем скриншот
-    await loop.run_in_executor(None, driver.save_screenshot, path)
+    success = driver.save_screenshot(path)
+    print("screenshot saved:", success, "at", path)
