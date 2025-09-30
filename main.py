@@ -1,5 +1,6 @@
 import pandas as pd
 import asyncio
+import os
 from aiogram import Bot, executor, Dispatcher, types
 from Main_kb import kb_main, pic_keyboard, psychology_answer_kb, psychology_order_confirmation_kb
 from Take_user_name_inline_kb import take_user_name_kb
@@ -516,7 +517,7 @@ async def take_user_name(m: types.Message) -> user_name:
             i += 1
 
     elif user_name[0] == "Эта":
-        photo = open('1.png', 'rb')
+        photo = open(os.path.join(os.getcwd(), "2.png"), "rb")
         await get_schedule(full_name)
         await bot.send_message(chat_id=m.from_user.id,
                                text=f'Вот ваше расписание на эту неделю, {full_name}')
@@ -524,7 +525,7 @@ async def take_user_name(m: types.Message) -> user_name:
                              photo=photo)
 
     elif user_name[0] == "Следующая":
-        photo = open('2.png', 'rb')
+        photo = open(os.path.join(os.getcwd(), "2.png"), "rb")
         await get_schedule(full_name)
         await bot.send_message(chat_id=m.from_user.id,
                                text=f'Вот ваше расписание на следующую неделю, {full_name}')
@@ -1217,7 +1218,7 @@ async def incorrect_name_func(callback: types.CallbackQuery) -> None:
     elif callback.data == 'this':
         await callback.message.edit_reply_markup(reply_markup=None)
 
-        photo = open('1.png', 'rb')
+        photo = open(os.path.join(os.getcwd(), "2.png"), "rb")
         await get_schedule(full_name)
         await bot.send_message(chat_id=callback.message.chat.id,
                                text=f'Вот ваше расписание на эту неделю, {full_name}')
@@ -1227,7 +1228,7 @@ async def incorrect_name_func(callback: types.CallbackQuery) -> None:
     elif callback.data == 'next':
         await callback.message.edit_reply_markup(reply_markup=None)
 
-        photo = open('2.png', 'rb')
+        photo = open(os.path.join(os.getcwd(), "1.png"), "rb")
         await get_schedule(full_name)
         await bot.send_message(chat_id=callback.message.chat.id,
                                text=f'Вот ваше расписание на следующую неделю, {full_name}')
