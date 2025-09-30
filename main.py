@@ -517,7 +517,8 @@ async def take_user_name(m: types.Message) -> user_name:
             i += 1
 
     elif user_name[0] == "Эта":
-        photo = open(os.path.join(os.getcwd(), "2.png"), "rb")
+        photo = photo = open("/tmp/2.png", "rb")
+
         await get_schedule(full_name)
         await bot.send_message(chat_id=m.from_user.id,
                                text=f'Вот ваше расписание на эту неделю, {full_name}')
@@ -525,7 +526,8 @@ async def take_user_name(m: types.Message) -> user_name:
                              photo=photo)
 
     elif user_name[0] == "Следующая":
-        photo = open(os.path.join(os.getcwd(), "2.png"), "rb")
+        photo = photo = open("/tmp/2.png", "rb")
+
         await get_schedule(full_name)
         await bot.send_message(chat_id=m.from_user.id,
                                text=f'Вот ваше расписание на следующую неделю, {full_name}')
@@ -1218,7 +1220,8 @@ async def incorrect_name_func(callback: types.CallbackQuery) -> None:
     elif callback.data == 'this':
         await callback.message.edit_reply_markup(reply_markup=None)
 
-        photo = open(os.path.join(os.getcwd(), "2.png"), "rb")
+        photo = photo = open("/tmp/2.png", "rb")
+
         await get_schedule(full_name)
         await bot.send_message(chat_id=callback.message.chat.id,
                                text=f'Вот ваше расписание на эту неделю, {full_name}')
@@ -1228,7 +1231,7 @@ async def incorrect_name_func(callback: types.CallbackQuery) -> None:
     elif callback.data == 'next':
         await callback.message.edit_reply_markup(reply_markup=None)
 
-        photo = open(os.path.join(os.getcwd(), "1.png"), "rb")
+        photo = photo = open("/tmp/1.png", "rb")
         await get_schedule(full_name)
         await bot.send_message(chat_id=callback.message.chat.id,
                                text=f'Вот ваше расписание на следующую неделю, {full_name}')
