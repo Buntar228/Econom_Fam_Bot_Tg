@@ -517,7 +517,6 @@ async def take_user_name(m: types.Message) -> user_name:
             i += 1
 
     elif user_name[0] == "Эта":
-        # сначала создаём скрин
         screenshot_path_1, screenshot_path_2 = await get_schedule(full_name)
     
         await bot.send_message(
@@ -526,7 +525,7 @@ async def take_user_name(m: types.Message) -> user_name:
         )
     
         # открываем файл уже после того, как он создан
-        with open(screenshot_path_2, "rb") as photo:
+        with open(screenshot_path_1, "rb") as photo:
             await bot.send_photo(chat_id=m.from_user.id, photo=photo)
     
     
@@ -1226,21 +1225,26 @@ async def incorrect_name_func(callback: types.CallbackQuery) -> None:
         await callback.message.answer(text=f'Пока ничего нового нет')
 
     elif callback.data == 'this':
+        screenshot_path_1, screenshot_path_2 = await get_schedule(full_name)
+
         await callback.message.edit_reply_markup(reply_markup=None)
+        
+        with open(screenshot_path_1, "rb") as photo:
+            await callback.message.answer_photo(photo)
 
-        photo = open("/tmp/2.png", "rb")
-
-        await get_schedule(full_name)
         await bot.send_message(chat_id=callback.message.chat.id,
                                text=f'Вот ваше расписание на эту неделю, {full_name}')
         await bot.send_photo(chat_id=callback.message.chat.id,
                              photo=photo)
 
     elif callback.data == 'next':
+        screenshot_path_1, screenshot_path_2 = await get_schedule(full_name)
+
         await callback.message.edit_reply_markup(reply_markup=None)
 
-        photo = open("/tmp/1.png", "rb")
-        await get_schedule(full_name)
+        with open(screenshot_path_2, "rb") as photo:
+            await callback.message.answer_photo(photo)
+
         await bot.send_message(chat_id=callback.message.chat.id,
                                text=f'Вот ваше расписание на следующую неделю, {full_name}')
         await bot.send_photo(chat_id=callback.message.chat.id,
